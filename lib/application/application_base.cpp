@@ -1,17 +1,11 @@
-#include "application.h"
-#include "application_priv.h"
+#include "application_base.h"
+#include "application_base_priv.h"
 
 #include <signal.h>
 #include <iostream>
 
-bool AppData::g_run = true;
 
-void AppData::shandler(int signum)
-{
-    g_run = false;
-}
-
-Application::Application(int argc, char ** argv)
+ApplicationBase::ApplicationBase(int argc, char ** argv)
 {
     std::cout.sync_with_stdio(false);
     data_.reset(new AppData);
@@ -21,7 +15,7 @@ Application::Application(int argc, char ** argv)
     signal(SIGINT, AppData::shandler);
 }
 
-Application::~Application()
+ApplicationBase::~ApplicationBase()
 {
     signal(SIGTERM, SIG_DFL);
     signal(SIGPIPE, SIG_DFL);
@@ -29,19 +23,17 @@ Application::~Application()
     signal(SIGINT, SIG_DFL);
 }
 
-int Application::run()
+int ApplicationBase::run()
 {
     std::cout << "App loop started\n";
     std::cout.flush();
-    data_->reciverSvc.StartThread();
-    while (AppData::g_run) {
-        ThreadImpl::sleep(1000);
-    }
+    int r = mainLoop();
     std::cout << "apploop stopped";
     std::cout.flush();
+    return r;
+}
 
-    data_->reciverSvc.Join();
-    std::cout << "apploop exiting";
-    std::cout.flush();
-    return 0;
+bool ApplicationBase::isRun()
+{
+    return data_->g_run;
 }

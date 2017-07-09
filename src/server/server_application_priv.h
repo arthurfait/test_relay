@@ -5,7 +5,7 @@
 
 struct AppData
 {
-    TestThreadSend reciverSvc;
+
     static bool g_run;
     static void shandler(int signum);
 };
