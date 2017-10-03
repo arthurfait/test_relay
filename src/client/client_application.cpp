@@ -13,9 +13,10 @@ ClientApplication::~ClientApplication()
 
 int ClientApplication::mainLoop()
 {
-
+    FileReader fileReader("")
     while (isRun()) {
-//         ThreadImpl::sleep(1000);
+        Buffer buff;
+        fileReader.read(buff);
     }
 
     std::cout << "apploop exiting";
